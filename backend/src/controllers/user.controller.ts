@@ -76,11 +76,10 @@ export const userSignupController = async (req: Request, res: Response): Promise
 export const userLoginController = async (req:Request, res:Response): Promise<void> => {
 
     try{
-        const { email, password } = req.body;
-
-        if( !email || !password ){
+        const { email, password , role} = req.body;
+        if( !email || !password || !role ){
             res.status(400).json({
-                message: "Email and password are required",
+                message: "Email, password and role are required",
                 success: false
             });
             return;
@@ -88,7 +87,6 @@ export const userLoginController = async (req:Request, res:Response): Promise<vo
 
         // find user by email
         const user = await UserModel.findOne({ email });
-
         if( !user ){
             res.status(404).json({
                 message: "User not found",
@@ -103,6 +101,14 @@ export const userLoginController = async (req:Request, res:Response): Promise<vo
         if( !isPasswordValid ){
             res.status(401).json({
                 message: "Invalid credentials",
+                success: false
+            });
+            return;
+        }
+
+        if (user.role !== role) {
+            res.status(403).json({
+                message: "Unauthorized role",
                 success: false
             });
             return;

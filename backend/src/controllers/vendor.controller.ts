@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import OrderModel from "../models/order.model";
 
-export const assignOrderToDeliveryController = async (req: Request, res: Response) => {
+export const assignOrderToDeliveryController = async (req: Request, res: Response):Promise<void> => {
 
     try{
 
@@ -58,7 +58,7 @@ export const assignOrderToDeliveryController = async (req: Request, res: Respons
         
     }catch(error){
         console.error("Error in userLoginController:", error);
-        return res.status(500).json({
+        res.status(500).json({
             message: "Internal server error",
             success: false
         });
