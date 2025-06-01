@@ -41,6 +41,12 @@ export default function RegisterForm() {
             setIsLoading(false);
             if (data.success) {
                 toast.success("Registration successful! You can now log in.");
+                setFormData({
+                    name: '',
+                    email: '',
+                    password: '',
+                    role: ''
+                });
             }else{
                 toast.error(data.message || "Registration failed. Please try again.");
             }

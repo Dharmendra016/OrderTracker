@@ -7,16 +7,24 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from "sonner"
 import Link from 'next/link';
+import { useAuth } from '@/contexts/AuthContext';
+
+interface FormData {
+    email: string;
+    password: string;
+    role: string;
+}
 
 
 export default function LoginForm() {
 
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<FormData>({
         email: '',
         password: '',
         role: ''
     });
     const [isLoading, setIsLoading] = useState(false);
+    const {login} = useAuth()
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -39,6 +47,17 @@ export default function LoginForm() {
             setIsLoading(false);
             if (data.success) {
                 toast.success("Login successful!");
+                login({
+                    email: data.user.email,
+                    role: data.user.role,
+                    name: data.user.name,
+                    id: data.user.id
+                })
+                setFormData({
+                    email: '',
+                    password: '',
+                    role: ''
+                });
             }else{
                 toast.error(data.message || "Login failed. Please try again.");
             }

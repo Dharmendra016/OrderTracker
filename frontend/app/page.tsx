@@ -1,3 +1,4 @@
+import MapComponent from "@/components/MapComponent";
 import Link from "next/link";
 
 export default function Home() {
@@ -14,6 +15,7 @@ export default function Home() {
       <div className="mt-10 text-center">
         <p className="text-gray-600">© 2023 Delivery App. All rights reserved.</p>
       </div>
+      <MapComponent/>
     </div>
 
   );
