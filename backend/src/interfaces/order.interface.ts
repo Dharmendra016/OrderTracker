@@ -6,6 +6,7 @@ export interface OrderInterface extends Document {
     items: Types.ObjectId[];
     status: 'pending' | 'assigned' | 'on_the_way' | 'delivered';
     address: string;
+    roomNumber: string;
     currentLocation?: {
         lat: number;
         lng: number;

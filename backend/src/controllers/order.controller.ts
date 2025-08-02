@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import OrderModel from "../models/order.model";
 import { UserPayloadInterface } from "../interfaces/userPayload.interface";
 import UserModel from "../models/user.model";
+import {v4 as uuid} from 'uuid';
 
 export const getAllOrdersController = async (req:Request, res:Response): Promise<void> => {
 
@@ -79,12 +80,15 @@ export const createOrderController = async (req: Request, res: Response): Promis
             return;
         }
 
+        const roomNumber = uuid(); 
+
         const order = new OrderModel({
             customer: id,
             vendor: vendorId,
             items: [itemId],
             address: address || "Default Address",
             status: "pending",
+            roomNumber: roomNumber,
             currentLocation: [{
                 lat: lat || 0.0,
                 lng: lng || 0.0
@@ -110,6 +114,7 @@ export const createOrderController = async (req: Request, res: Response): Promis
                 items: savedOrder.items,
                 address: savedOrder.address,
                 status: savedOrder.status,
+                roomNumber: savedOrder.roomNumber,
                 currentLocation: savedOrder.currentLocation,
                 createdAt: savedOrder.createdAt
             }

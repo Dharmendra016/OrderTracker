@@ -1,58 +1,70 @@
-// components/MapComponent.tsx
 "use client";
 
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  useMap,
+} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import L from "leaflet";
 import { useEffect, useState } from "react";
+import L, { Icon } from "leaflet";
 
-// Fix icon issue
-delete (L.Icon.Default.prototype as any)._getIconUrl;
-L.Icon.Default.mergeOptions({
-    iconUrl: "/leaflet/images/marker-icon.png",
-    iconRetinaUrl: "/leaflet/images/marker-icon-2x.png",
-    shadowUrl: "/leaflet/images/marker-shadow.png",
+const icon = new Icon({
+  iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41], // Proper anchor so it points at the location
 });
 
-
 export default function MapComponent() {
+  const [position, setPosition] = useState<L.LatLng | null>(null);
 
-    const [position, setPosition] = useState<[number, number] | null>(null);
+  function LocateOnLoad() {
+    const map = useMap();
 
     useEffect(() => {
-        const watchId = navigator.geolocation.watchPosition(
-            (pos) => {
-                const { latitude, longitude } = pos.coords;
-                console.log("Current Position:", latitude, longitude);
-                setPosition([latitude, longitude]);
-            },
-            (err) => console.error(err)
-        );
+      map.locate({ setView: true });
 
-        // Cleanup
-        return () => navigator.geolocation.clearWatch(watchId);
+      const onLocationFound = (e: L.LocationEvent) => {
+        setPosition(e.latlng);
+      };
 
-    }, [])
+      const onLocationError = (e: L.ErrorEvent) => {
+        alert("Location access denied. Please allow it in your browser.");
+        console.error(e.message);
+      };
 
-    return (
-        <div className="w-full h-full">
-            {position ? (
-                <MapContainer
-                    center={position}
-                    zoom={13}
-                    style={{ height: "400px", width: "100%" }}
-                >
-                    <TileLayer
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
-                    />
-                    <Marker position={position}>
-                        <Popup>You are here</Popup>
-                    </Marker>
-                </MapContainer>
-            ) : (
-                <p>Loading map...</p>
-            )}
-        </div>
-    );
-};
+      map.on("locationfound", onLocationFound);
+      map.on("locationerror", onLocationError);
+
+      return () => {
+        map.off("locationfound", onLocationFound);
+        map.off("locationerror", onLocationError);
+      };
+    }, [map]);
+
+    return null;
+  }
+
+  return (
+    <MapContainer
+      center={[51.505, -0.09]}
+      zoom={13}
+      style={{ height: "100vh", width: "100%" }}
+    >
+      <LocateOnLoad />
+      <TileLayer
+        attribution='&copy; OpenStreetMap contributors'
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+      {position && (
+        <Marker position={position} icon={icon}>
+          <Popup>
+            You are here.
+          </Popup>
+        </Marker>
+      )}
+    </MapContainer>
+  );
+}

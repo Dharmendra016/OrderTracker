@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { OrderInterface } from "../interfaces/order.interface";
+import { v4 as uuid } from 'uuid';
 
 
 const orderSchema = new mongoose.Schema<OrderInterface>({
@@ -31,6 +32,11 @@ const orderSchema = new mongoose.Schema<OrderInterface>({
         type: String,
         enum: ['pending', 'assigned', 'on_the_way', 'delivered'],
         default: 'pending',
+    },
+    roomNumber: {
+        type: String,
+        required: true,
+        default: uuid(), 
     },
     currentLocation: [{
         lat: {
