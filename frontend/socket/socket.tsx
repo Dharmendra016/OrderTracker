@@ -8,7 +8,7 @@ let socket: Socket | null = null;
 // Initialize socket connection
 export const initSocket = (): Socket => {
   if (!socket) {
-    socket = io("http://localhost:8000");
+    socket = io("https://ordertracker-vepx.onrender.com");
 
     socket.on("connect", () => {
       console.log("Connected to WebSocket server:", socket?.id);

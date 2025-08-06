@@ -184,7 +184,7 @@ export default function CustomerDashboard() {
  const HandleLogout = async () => {
 
     try {
-      await fetch("http://localhost:8000/api/v1/users/logout", {
+      await fetch("https://ordertracker-vepx.onrender.com/api/v1/users/logout", {
         method: "GET",
         headers: {
           "Content-Type": "application/json"

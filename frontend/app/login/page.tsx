@@ -57,7 +57,7 @@ export default function LoginPage() {
     
     try {
         
-        const res = await fetch("http://localhost:8000/api/v1/users/login", {
+        const res = await fetch("https://ordertracker-vepx.onrender.com/api/v1/users/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

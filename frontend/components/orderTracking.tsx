@@ -87,7 +87,7 @@ export default function OrderTracking() {
 
       try {
         const res = await fetch(
-          `http://localhost:8000/api/v1/map/getaddresscoordinate/${encodeURIComponent(destination)}`,
+          `https://ordertracker-vepx.onrender.com/api/v1/map/getaddresscoordinate/${encodeURIComponent(destination)}`,
           {
             method: "GET",
             headers: {

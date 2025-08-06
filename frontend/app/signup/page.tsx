@@ -99,7 +99,7 @@ export default function SignupPage() {
         setIsLoading(true);
         try {
             // api call 
-            const res = await fetch("http://localhost:8000/api/v1/users/signup", {
+            const res = await fetch("https://ordertracker-vepx.onrender.com/api/v1/users/signup", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

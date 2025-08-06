@@ -155,7 +155,7 @@ export default function DeliveryDashboard() {
   const updateDeliveryStatus = async (orderId: string, newStatus: string) => {
   try {
     // Update delivery status via API
-    const res = await fetch("http://localhost:8000/api/v1/delivery-partners/update-status", {
+    const res = await fetch("https://ordertracker-vepx.onrender.com/api/v1/delivery-partners/update-status", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -255,7 +255,7 @@ export default function DeliveryDashboard() {
  const HandleLogout = async () => {
 
     try {
-      await fetch("http://localhost:8000/api/v1/users/logout", {
+      await fetch("https://ordertracker-vepx.onrender.com/api/v1/users/logout", {
         method: "GET",
         headers: {
           "Content-Type": "application/json"
@@ -276,7 +276,7 @@ export default function DeliveryDashboard() {
     
     try {
       
-      const res = await fetch("http://localhost:8000/api/v1/delivery-partners/updateavailability", {
+      const res = await fetch("https://ordertracker-vepx.onrender.com/api/v1/delivery-partners/updateavailability", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
