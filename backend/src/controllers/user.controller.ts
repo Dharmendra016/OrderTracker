@@ -9,7 +9,7 @@ export const userSignupController = async (req: Request, res: Response): Promise
 
     try {
 
-        const {name, email, password, role } = req.body;
+        const {name, email, password, role, shopName} = req.body;
 
         if( !name || !email || !password || !role){
             res.status(400).json({
@@ -20,7 +20,7 @@ export const userSignupController = async (req: Request, res: Response): Promise
         };
 
         // Check if user already exists
-        const existingUser = await UserModel.findOne({email});
+        const existingUser = await UserModel.findOne({email, role});
         if (existingUser) {
             res.status(400).json({
                 message: "User already exists",
@@ -37,7 +37,8 @@ export const userSignupController = async (req: Request, res: Response): Promise
             name, 
             email,
             password: hashedPassword,
-            role
+            role,
+            shopName: role === 'vendor' ? shopName : undefined, // Only set shopName for vendors
         })
 
         // save user to database
@@ -132,7 +133,9 @@ export const userLoginController = async (req:Request, res:Response): Promise<vo
                 id: user._id,
                 name: user.name,
                 email: user.email,
-                role: user.role
+                role: user.role,
+                available: user.available,
+                shopName: user.shopName,
             }
         });
     }catch(error) {
@@ -145,3 +148,21 @@ export const userLoginController = async (req:Request, res:Response): Promise<vo
 
 }
 
+
+export const userLogoutController = async (req: Request, res: Response): Promise<void> => {
+
+    try {
+        res.clearCookie("token");
+        res.status(200).json({
+            message: "Logout successful",
+            success: true
+        });
+    } catch (error) {
+        console.error("Error in userLogoutController:", error);
+        res.status(500).json({
+            message: "Internal server error",
+            success: false
+        });
+    }
+
+}

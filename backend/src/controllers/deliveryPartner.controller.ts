@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import OrderModel from "../models/order.model";
 import mongoose from "mongoose";
+import UserModel from "../models/user.model";
 
 
 export const allAssignedOrdersController = async (req: Request, res: Response): Promise<void> => {
@@ -38,7 +39,8 @@ export const allAssignedOrdersController = async (req: Request, res: Response): 
                 customer: order.customer,
                 vendor: order.vendor,
                 items: order.items,
-                address: order.address,
+                pickupAddress: order.pickupAddress,
+                deliveryAddress: order.deliveryAddress,
                 status: order.status,
                 currentLocation: order.currentLocation,
                 createdAt: order.createdAt
@@ -184,3 +186,70 @@ export const completeOrderController = async (req: Request, res: Response): Prom
         });
     }
 };
+
+
+
+export const changeAvailabilityController = async (req: Request, res: Response): Promise<void> => {
+
+    try {
+        const { id } = req.user as { id: string };
+        const { isAvailable} = req.body; 
+
+        if (!id) {
+            res.status(400).json({
+                message: "User ID is required",
+                success: false
+            });
+            return;
+        }
+
+        if (typeof isAvailable !== "boolean") {
+            res.status(400).json({
+                message: "isAvailable must be a boolean",
+                success: false
+            });
+            return;
+        }
+
+        // Find the user by ID and update their availability
+        const user = await UserModel.findById(id);
+        if (!user) {
+            res.status(404).json({
+                message: "User not found",
+                success: false
+            });
+            return;
+        }
+
+        user.available = isAvailable;
+        const updatedUser = await user.save();
+        if (!updatedUser) {
+            res.status(500).json({
+                message: "Error updating user availability",
+                success: false
+            });
+            return;
+        }
+
+        res.status(200).json({
+            message: "User availability updated successfully",
+            success: true,
+            user: {
+                id: updatedUser._id,
+                available: updatedUser.available,
+                name: updatedUser.name,
+                email: updatedUser.email,
+                role: updatedUser.role,
+                shopName: updatedUser.shopName
+            }
+        });
+
+    } catch (error) {
+        console.error("Error in changeAvailabilityController:", error);
+        res.status(500).json({
+            message: "Internal server error",
+            success: false
+        });
+    }
+
+}

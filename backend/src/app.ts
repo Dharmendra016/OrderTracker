@@ -9,7 +9,9 @@ import { authMiddleware } from './middlewares/auth.middleware';
 import orderRoutes from './routes/order.route';
 import vendorRoutes from './routes/vendor.route';
 import deliveryPartnerRoutes from './routes/deliveryPartner.route';
+import mapRoutes from './routes/map.routes';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 const server = http.createServer(app);
@@ -18,6 +20,8 @@ initSocketIO(server);
 // Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
 
 // cors configuration
 app.use(cors({
@@ -33,6 +37,7 @@ app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/orders", orderRoutes);
 app.use("/api/v1/vendors", vendorRoutes);
 app.use("/api/v1/delivery-partners", deliveryPartnerRoutes);
+app.use("/api/v1/map", mapRoutes);
 
 app.use(errorHandler);
 

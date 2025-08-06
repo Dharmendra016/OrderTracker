@@ -5,7 +5,8 @@ export const getAddressCoordinate = async (req: Request, res: Response): Promise
 
     try {
 
-        const { address } = req.query;
+        const { address } = req.params;
+        console.log("Received address:", address);
         if (!address || typeof address !== 'string') {
             res.status(400).json({
                 message: "Address is required and must be a string",
@@ -15,6 +16,7 @@ export const getAddressCoordinate = async (req: Request, res: Response): Promise
         }
         
         const coordinates = await getLocationCoordinates(address);
+        console.log("Coordinates fetched:", coordinates);
         if (!coordinates) {
             res.status(404).json({
                 message: "Coordinates not found for the provided address",

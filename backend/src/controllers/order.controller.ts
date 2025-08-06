@@ -27,7 +27,8 @@ export const getAllOrdersController = async (req:Request, res:Response): Promise
                 vendor: order.vendor,
                 deliveryPartner: order.deliveryPartner,
                 items: order.items,
-                address: order.address,
+                pickupAddress: order.pickupAddress,
+                deliveryAddress: order.deliveryAddress,
                 status: order.status,
                 currentLocation: order.currentLocation,
                 createdAt: order.createdAt
@@ -112,7 +113,8 @@ export const createOrderController = async (req: Request, res: Response): Promis
                 customer: savedOrder.customer,
                 vendor: savedOrder.vendor,
                 items: savedOrder.items,
-                address: savedOrder.address,
+                pickupAddress: savedOrder.pickupAddress,
+                deliveryAddress: savedOrder.deliveryAddress,
                 status: savedOrder.status,
                 roomNumber: savedOrder.roomNumber,
                 currentLocation: savedOrder.currentLocation,
@@ -123,6 +125,76 @@ export const createOrderController = async (req: Request, res: Response): Promis
         
     } catch (error) {
         console.error("Error in createOrderController:", error);
+        res.status(500).json({
+            message: "Internal server error",
+            success: false
+        });
+    }
+
+}
+
+
+export const updateStatusController = async (req: Request, res: Response): Promise<void> => {
+    try {
+
+        const {id} = req.user as UserPayloadInterface;
+        const { orderId, status } = req.body;
+
+        if (!id) {
+            res.status(401).json({
+                message: "Unauthorized access",
+                success: false
+            });
+            return;
+        }
+
+        if (!orderId || !status) {
+            res.status(400).json({
+                message: "Order ID and status are required",
+                success: false
+            });
+            return;
+        }
+
+        const order = await OrderModel.findById(orderId);
+
+        if (!order) {
+            res.status(404).json({
+                message: "Order not found",
+                success: false
+            });
+            return;
+        }
+
+        order.status = status;
+
+        const updatedOrder = await order.save();
+
+        if (!updatedOrder) {
+            res.status(500).json({
+                message: "Error updating order status",
+                success: false
+            });
+            return;
+        }
+
+        res.status(200).json({
+            message: "Order status updated successfully",
+            success: true,
+            order: {
+                id: updatedOrder._id,
+                vendor: updatedOrder.vendor,
+                items: updatedOrder.items,
+                status: updatedOrder.status,
+                deliveryPartner: updatedOrder.deliveryPartner,
+                pickupAddress: updatedOrder.pickupAddress,
+                deliveryAddress: updatedOrder.deliveryAddress,
+            }
+        });
+
+        
+    } catch (error) {
+        console.error("Error in updateStatusController:", error);
         res.status(500).json({
             message: "Internal server error",
             success: false

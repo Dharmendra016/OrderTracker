@@ -24,9 +24,11 @@ const orderSchema = new mongoose.Schema<OrderInterface>({
         ref: 'Item',
         required: true,
     }],
-    address: {
+    deliveryAddress: {
         type: String,
-        required: true,
+    },
+    pickupAddress: {
+        type: String,
     },
     status: {
         type: String,

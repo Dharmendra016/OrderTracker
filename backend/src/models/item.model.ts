@@ -7,6 +7,10 @@ const itemSchema = new mongoose.Schema<ItemInterface>({
         type: String,
         required: true,
     },
+    title: {
+        type: String,
+        required: true,
+    },
     price: {
         type: Number,
         required: true,
@@ -24,6 +28,17 @@ const itemSchema = new mongoose.Schema<ItemInterface>({
         type: String,
         default: '',
     },
+    image: {
+        type: String,
+        default: "https://via.placeholder.com/150",
+    },
+    rating:{
+        type: Number,
+        default: 0,
+        required: true,
+        min: 0,
+        max: 5
+    }
 }, { timestamps: true });
 
 const ItemModel = mongoose.model<ItemInterface>('Item', itemSchema);

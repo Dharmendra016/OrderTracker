@@ -5,7 +5,8 @@ export interface OrderInterface extends Document {
     deliveryPartner?: Types.ObjectId;
     items: Types.ObjectId[];
     status: 'pending' | 'assigned' | 'on_the_way' | 'delivered';
-    address: string;
+    deliveryAddress?: string;
+    pickupAddress?: string;
     roomNumber: string;
     currentLocation?: {
         lat: number;
