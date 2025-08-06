@@ -1,0 +1,1 @@
+export type StatusType = 'delivered' | 'in_transit' | 'processing' | 'cancelled';

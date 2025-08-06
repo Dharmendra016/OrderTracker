@@ -19,10 +19,9 @@ export default function OrderTracking() {
             {
                 enableHighAccuracy: true,
                 maximumAge: 0,
-                timeout: 5000,
+                timeout: 1000,
             }
         );
-
         return () => navigator.geolocation.clearWatch(watchId);
     }, []);
 
@@ -40,7 +39,8 @@ export default function OrderTracking() {
             const endLng = startCoords[1] + offsetLng;
 
             const end = `${endLng},${endLat}`; // lng,lat
-
+            
+            console.log("Tracking started with watchId:", startCoords);
             try {
                 const res = await fetch(`https://api.openrouteservice.org/v2/directions/driving-car?api_key=eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImZkNjdjMWJkMDFkMTQ5Y2JiYWZhYzljODYzZjQ1M2JhIiwiaCI6Im11cm11cjY0In0=&start=${start}&end=${end}`);
                 const data = await res.json();
@@ -58,10 +58,12 @@ export default function OrderTracking() {
 
     return (
         <div>
-            <Map
+            {routeCoords.length > 0 ? <Map
                 routeCoords={routeCoords}
-
-            />
+            /> :
+            <p>Tracking your location...</p>
+            }
+            
         </div>
     );
 }
