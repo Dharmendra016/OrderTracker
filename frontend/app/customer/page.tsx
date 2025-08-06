@@ -34,13 +34,14 @@ export default function CustomerDashboard() {
   // Mock data
   const orders = [
     {
-      id: 'ORD-001',
+      id: 'DEL-001',
       title: 'Wireless Bluetooth Headphones',
       vendor: 'TechStore Pro',
       status: 'delivered',
       orderDate: '2024-08-01',
       deliveryDate: '2024-08-03',
       amount: 89.99,
+      deliveryAddress: 'New baneshwor, Kathmandu, Nepal',
       trackingNumber: 'TRK-12345',
       rating: 5,
       image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=100&h=100&fit=crop'
@@ -166,10 +167,38 @@ export default function CustomerDashboard() {
     }
   ];
 
-  const HandleLogout = () => {
-    toast.success('Logged out successfully');
-    setUser(null);
-    router.push('/login');
+  const handleNavigate = (delivery: any) => {
+    try {
+      console.log("loc", delivery.deliveryAddress);
+      router.push(
+            `/ordertracking?deliveryId=${delivery.id}&destination=${encodeURIComponent(
+              delivery.deliveryAddress
+            )}`
+      );
+
+    } catch (error) {
+      console.log("Navigation error:", error);
+    }
+  };
+
+ const HandleLogout = async () => {
+
+    try {
+      await fetch("http://localhost:8000/api/v1/users/logout", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        credentials: "include" // Ensure cookies are sent with the request
+      })
+        toast.success('Logged out successfully');
+        setUser(null);
+        router.push('/login');
+    } catch (error) {
+      console.error("Logout error:", error);
+      toast.error('Failed to log out');
+    }
+    
   };
 
   return (
@@ -189,7 +218,7 @@ export default function CustomerDashboard() {
                 <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
               </div>
               <div className="flex items-center space-x-2">
-                <User className="w-8 h-8 text-gray-600 bg-gray-200 rounded-full p-1" />
+                <img src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${user?.name}`} className="w-8 h-8 text-gray-600 bg-gray-200 rounded-full p-1" alt="User Avatar" />
                 <span className="text-gray-700 font-medium">{user?.name}</span>
               </div>
               <div className="flex items-center space-x-2" onClick={HandleLogout}>
@@ -322,7 +351,7 @@ export default function CustomerDashboard() {
                       <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
                         <span className="text-sm text-gray-600">Tracking: {order.trackingNumber}</span>
                         <div className="flex space-x-2">
-                          <button className="flex items-center space-x-1 px-3 py-1 text-sm text-blue-600 border border-blue-600 rounded hover:bg-blue-50">
+                          <button onClick={() => handleNavigate(order)} className="flex items-center space-x-1 px-3 py-1 text-sm text-blue-600 border border-blue-600 rounded hover:bg-blue-50">
                             <Eye className="w-4 h-4" />
                             <span>Track</span>
                           </button>
@@ -350,7 +379,7 @@ export default function CustomerDashboard() {
                       placeholder="Enter tracking number"
                       className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
-                    <button className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    <button  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
                       Track
                     </button>
                   </div>

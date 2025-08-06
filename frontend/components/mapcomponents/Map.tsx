@@ -13,26 +13,23 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadow.src ?? markerShadow,
 });
 
-export default function Map({ routeCoords }: { routeCoords: [number, number][] }) {
+export default function Map({ startCoords, endCoords, routeCoords }: { startCoords: [number, number]; endCoords: [number, number]; routeCoords: [number, number][] }) {
   if (!routeCoords || routeCoords.length < 2) return <p>Invalid route coordinates</p>;
 
-  const start = routeCoords[0];
-  const end = routeCoords[routeCoords.length - 1];
-
   return (
-    <MapContainer center={start} zoom={13} style={{ height: "100vh", width: "100%" }}>
+    <MapContainer center={startCoords} zoom={16} style={{ height: "100vh", width: "100%" }}>
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       />
       
       {/* Delivery Partner Marker */}
-      <Marker position={start}>
+      <Marker position={startCoords}>
         <Popup>Delivery Partner</Popup>
       </Marker>
 
       {/* Customer/Destination Marker */}
-      <Marker position={end}>
+      <Marker position={endCoords}>
         <Popup>Customer Location</Popup>
       </Marker>
 

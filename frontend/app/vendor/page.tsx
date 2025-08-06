@@ -225,11 +225,25 @@ export default function VendorDashboard() {
   const {user, setUser} = useUserContext();
   const router = useRouter();
 
-   const HandleLogout = () => {
-      toast.success('Logged out successfully');
-      setUser(null);
-      router.push('/login');
-    };
+ const HandleLogout = async () => {
+
+    try {
+      await fetch("http://localhost:8000/api/v1/users/logout", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        credentials: "include" // Ensure cookies are sent with the request
+      })
+        toast.success('Logged out successfully');
+        setUser(null);
+        router.push('/login');
+    } catch (error) {
+      console.error("Logout error:", error);
+      toast.error('Failed to log out');
+    }
+    
+  };
   
   return (
     <div className="min-h-screen bg-gray-50">
@@ -251,7 +265,7 @@ export default function VendorDashboard() {
                 <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
               </div>
               <div className="flex items-center space-x-2">
-                <User className="w-8 h-8 text-gray-600 bg-gray-200 rounded-full p-1" />
+                <img src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${user?.name}`} className="w-8 h-8 text-gray-600 bg-gray-200 rounded-full p-1" alt="User Avatar" />
                 <span className="text-gray-700 font-medium">{user?.name}</span>
               </div>
               <div className="flex items-center space-x-2" onClick={HandleLogout}>
